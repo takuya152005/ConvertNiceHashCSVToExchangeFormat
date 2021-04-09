@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"flag"
 	"fmt"
+	"math"
 	"os"
 	"sort"
 	"strconv"
@@ -208,10 +209,13 @@ func (c *Command) convertCryptoLinCCSV(csv []NiceHashCSV)([][]string, error){
 			case HashpowerMining:
 				miningTradingVol = miningTradingVol + niceHashCSV.amount
 			case HashpowerMiningFee:
+				// Feeは負数
 				miningFee = miningFee + niceHashCSV.amount
 			case WithdrawalComplete:
-				sendTradingVol = sendTradingVol + niceHashCSV.amount
+				// 正数にする必要があるので絶対値を取る
+				sendTradingVol = sendTradingVol + math.Abs(niceHashCSV.amount)
 			case WithdrawalFee:
+				// Feeは負数
 				sendFee = sendFee + niceHashCSV.amount
 			default:
 				panic("error string to purpose. str:" + niceHashCSV.purpose)
